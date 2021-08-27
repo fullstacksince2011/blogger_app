@@ -1,0 +1,71 @@
+<main role="main">
+
+  <!-- Main jumbotron for a primary marketing message or call to action -->
+  <div class="jumbotron">
+    <div class="container">
+      
+      <%= link_to 'Add New Post', new_post_path, class: "btn btn-primary text-light float-right" %>
+      <h2 class="display-5">Blog Posts</h2>
+      <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Example row of columns -->
+    <% if @posts.count < 1 %>
+      <div class="alert alert-danger" role="alert">
+        No post availbale!
+      </div>
+    <% end %>
+    <% @posts.each do |post| %>
+      <div class="card p-3 m-2">
+        <div class="row">
+          <div class="col-md-4">
+              <% if post.image.present? %>
+                <%= image_tag post.image, class: "rounded", width: "320px", height: "180px" %>
+              <% end %>
+          </div>
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-6">
+                <h3><%= post.try(:title) %></h3>
+              </div>
+              <% unless post.user_id != current_user.id%>
+                <div class="col-6 d-flex justify-content-end">
+                  <%= link_to 'Edit', edit_post_path(post), class: "btn btn-small btn-secondary edit_post_btn mr-2 pt-2" %>
+                  <%= link_to 'Delete', post, method: :delete, data: { confirm: 'Are you sure?' }, class: "btn btn-small btn-danger pt-2 destroy_post_btn" %>
+                </div>
+              <%end%>
+            </div>
+            <div class="d-flex flex-column justify-content-start"><span class="date text-black-50">Author - <%= post.try(:user).try(:email) %> | Shared publicly - <%= post.try(:created_at).strftime("%d-%m-%Y %H:%M") %></span></div>
+            <p><%= post.try(:body) %></p>
+            <!-- Comment Section  -->
+            <%= render './comments/list', comments: post.comments, post: post %>
+            <div class="bg-white">
+              <div class="d-flex flex-row fs-12">
+                <div class="like p-2 cursor d-flex">
+                  <%@user_like = Like.where(user_id: current_user.id, post_id: post.id).try(:first)%>
+                  <% like_icon_text = "<i class='fa fa-thumbs-o-up'></i> <span class='icon_text_#{post.id} mr-1'>Like</span>" %>
+                  <% unlike_icon_text = "<i class='fa fa-thumbs-o-up'></i> <span class='icon_text_#{post.id} mr-1'>Unlike</span>"%>
+                  <%if @user_like.present?%>
+                    <%= link_to "#{unlike_icon_text}".html_safe, like_post_posts_url({id: post.id}), class:"like-btn-#{post.id} liked", remote: true, method: :post %>
+                  <%else%>
+                    <%= link_to "#{like_icon_text}".html_safe, like_post_posts_url({id: post.id}), class:"like-btn-#{post.id}", remote: true, method: :post %>
+                  <%end%>
+                  <div id="like_div_<%=post.id%>">
+                    <%= render(partial: "posts/like_post", locals: {likes:  post.likes.count, :post_id => post.id}) %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <%= render './comments/form', comment: post.comments.new, post: post %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <hr>
+
+  </div> <!-- /container -->
+
+</main>

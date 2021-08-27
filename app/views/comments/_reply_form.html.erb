@@ -1,0 +1,11 @@
+<div class="ml-5 mb-5">
+  <%= form_with url: post_comments_url(@comment.post_id), :html => {:id => "comment_reply_form_#{@comment.post_id}" } do |f| %>
+    <%= f.hidden_field :parent_id, value: @comment.parent_id %>
+    <%= f.hidden_field :user_id, value: current_user.id %>
+    <div class="form-group">
+      <%= f.label 'Reply' %>
+      <%= f.text_area :body, class: 'form-control' %>
+    </div>
+    <%= f.submit 'Submit', class: 'btn btn-primary btn-sm float-right', id: "rpbtn_#{comment.parent_id}" %>
+  <% end %>
+</div>

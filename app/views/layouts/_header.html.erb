@@ -1,0 +1,25 @@
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+ <%= image_tag(asset_path('blogger_white_120.png')) %>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <% if user_signed_in? %>
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <%= link_to "Home", root_path, class: "nav-link" %>
+        </li>
+      </ul>
+    <% end %>
+    <div class="right-btns float-right">
+      <% if params[:controller] != "devise/sessions" && params[:controller] != "devise/registrations" %>
+        <% if user_signed_in? %>
+          <%= button_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-danger"%>
+        <% else %>
+          <%= button_to "Login", new_user_session_path, method: :post, class: "btn btn-success" %>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</nav>

@@ -1,0 +1,14 @@
+<%@like = Like.where(user_id: current_user.id, post_id: @post.id).try(:first)%>
+<%if @like.present? %>
+  <% js = escape_javascript(render(partial: "posts/like_post", locals: {likes: @post.likes.count, :post_id => @post.id})) %>
+  document.getElementsByClassName("like-btn-<%=@post.id%>")[0].className = "like-btn-<%=@post.id%> liked";
+  document.getElementsByClassName("icon_text_<%=@post.id%>")[0].innerText = "Unlike";
+  $like_div = $("#like_div_<%=@post.id%>");
+  $like_div.html("<%= js %>");
+<%else%>
+  <% js = escape_javascript(render(partial: "posts/like_post", locals: {likes: @post.likes.count, :post_id => @post.id})) %>
+  document.getElementsByClassName("like-btn-<%=@post.id%>")[0].className = "like-btn-<%=@post.id%>";
+  document.getElementsByClassName("icon_text_<%=@post.id%>")[0].innerText = "Like";
+  $like_div = $("#like_div_<%=@post.id%>");
+  $like_div.html("<%= js %>");
+<%end%>
